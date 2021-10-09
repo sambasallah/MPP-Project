@@ -35,9 +35,6 @@ public class LibrarySystem extends JFrame implements LibWindow {
     private static LibWindow[] allWindows = { 
     	LibrarySystem.INSTANCE,
 		LoginWindow.INSTANCE,
-		AllMemberIdsWindow.INSTANCE,	
-		AllBookIdsWindow.INSTANCE,
-		AddLibraryMember.INSTANCE,
 		Checkout.INSTANCE,
 		CheckoutHistory.INSTANCE
 	};
@@ -92,12 +89,7 @@ public class LibrarySystem extends JFrame implements LibWindow {
  	   menuBar.add(options);
  	   login = new JMenuItem("Login");
  	   login.addActionListener(new LoginListener());
- 	   allBookIds = new JMenuItem("All Book Ids");
- 	   allBookIds.addActionListener(new AllBookIdsListener());
- 	   allMemberIds = new JMenuItem("All Member Ids");
- 	   allMemberIds.addActionListener(new AllMemberIdsListener());
- 	    addLibraryMember = new JMenuItem("Add Library Member");
- 	    addLibraryMember.addActionListener(new AddLibraryMemberListener());
+ 	
  	   checkout = new JMenuItem("Checkout book");
 	    checkout.addActionListener(new CheckoutListener());
 	    logout = new JMenuItem("Logout");
@@ -138,103 +130,10 @@ public class LibrarySystem extends JFrame implements LibWindow {
     	
     }
     
-    class AllBookIdsListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			
-			if(SystemController.currentAuth == null) {
-    			JOptionPane.showMessageDialog(LibrarySystem.this, "You have to login first");
-    			return;
-    		};
-			
-			LibrarySystem.hideAllWindows();
-			AllBookIdsWindow.INSTANCE.init();
-			
-			List<String> ids = ci.allBookIds();
-			Collections.sort(ids);
-			StringBuilder sb = new StringBuilder();
-			for(String s: ids) {
-				sb.append(s + "\n");
-			}
-			System.out.println(sb.toString());
-			AllBookIdsWindow.INSTANCE.setData(sb.toString());
-			AllBookIdsWindow.INSTANCE.pack();
-			//AllBookIdsWindow.INSTANCE.setSize(660,500);
-			Util.centerFrameOnDesktop(AllBookIdsWindow.INSTANCE);
-			AllBookIdsWindow.INSTANCE.setVisible(true);
-			
-		}
-    	
-    }
+ 
     
-    class AllMemberIdsListener implements ActionListener {
-
-    	@Override
-		public void actionPerformed(ActionEvent e) {
-    		
-    		if(SystemController.currentAuth == null){
-    			JOptionPane.showMessageDialog(LibrarySystem.this, "You have to login first");
-    			return;
-    		};
-    		
-			LibrarySystem.hideAllWindows();
-			AllMemberIdsWindow.INSTANCE.init();
-			AllMemberIdsWindow.INSTANCE.pack();
-			AllMemberIdsWindow.INSTANCE.setVisible(true);
-			
-			
-			LibrarySystem.hideAllWindows();
-			AllBookIdsWindow.INSTANCE.init();
-			
-			List<String> ids = ci.allMemberIds();
-			Collections.sort(ids);
-			StringBuilder sb = new StringBuilder();
-			for(String s: ids) {
-				sb.append(s + "\n");
-			}
-			System.out.println(sb.toString());
-			AllMemberIdsWindow.INSTANCE.setData(sb.toString());
-			AllMemberIdsWindow.INSTANCE.pack();
-			//AllMemberIdsWindow.INSTANCE.setSize(660,500);
-			Util.centerFrameOnDesktop(AllMemberIdsWindow.INSTANCE);
-			AllMemberIdsWindow.INSTANCE.setVisible(true);
-			
-			
-		}
-    	
-    }
-    
-    class AddLibraryMemberListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			
-			if(SystemController.currentAuth == null) {
-    			JOptionPane.showMessageDialog(LibrarySystem.this, "You have to login first");
-    			return;
-    		};
-			
-			if((SystemController.currentAuth != Auth.ADMIN)) {
-    			JOptionPane.showMessageDialog(LibrarySystem.this, "You not an ADMIN");
-    			return;
-    		};
-			
-			LibrarySystem.hideAllWindows();
-			AddLibraryMember.INSTANCE.init();
-			AddLibraryMember.INSTANCE.pack();
-			AddLibraryMember.INSTANCE.setVisible(true);
-			
-			
-			LibrarySystem.hideAllWindows();
-			AddLibraryMember.INSTANCE.init();
-			
-
-			Util.centerFrameOnDesktop(AddLibraryMember.INSTANCE);
-			AddLibraryMember.INSTANCE.setVisible(true);
-		}
-    	
-    }
+  
+   
     
     
     class CheckoutListener implements ActionListener {
