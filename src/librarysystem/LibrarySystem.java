@@ -28,7 +28,7 @@ public class LibrarySystem extends JFrame implements LibWindow {
 	JPanel mainPanel;
 	JMenuBar menuBar;
     JMenu options;
-    JMenuItem login, allBookIds, allMemberIds, addLibraryMember, checkout; 
+    JMenuItem login, allBookIds, allMemberIds, addLibraryMember, checkout, logout; 
     String pathToImage;
     private boolean isInitialized = false;
     
@@ -41,12 +41,14 @@ public class LibrarySystem extends JFrame implements LibWindow {
 		Checkout.INSTANCE,
 		CheckoutHistory.INSTANCE
 	};
+        	
     	
 	public static void hideAllWindows() {
 		
 		for(LibWindow frame: allWindows) {
 			frame.setVisible(false);
 		}
+		
 	}
     
     
@@ -58,7 +60,7 @@ public class LibrarySystem extends JFrame implements LibWindow {
     	insertSplashImage();
 		
 		createMenus();
-		//pack();
+		pack();
 		setSize(660,500);
 		isInitialized = true;
     }
@@ -98,11 +100,15 @@ public class LibrarySystem extends JFrame implements LibWindow {
  	    addLibraryMember.addActionListener(new AddLibraryMemberListener());
  	   checkout = new JMenuItem("Checkout book");
 	    checkout.addActionListener(new CheckoutListener());
- 	   options.add(login);
+	    logout = new JMenuItem("Logout");
+	    logout.addActionListener(new LogoutListener());
+ 	  if(SystemController.currentAuth == null)  options.add(login);
  	   options.add(allBookIds);
  	   options.add(allMemberIds);
  	   options.add(addLibraryMember);
  	   options.add(checkout);
+ 	   if(SystemController.currentAuth != null) options.add(logout);
+
     }
     
     class LoginListener implements ActionListener {
@@ -117,6 +123,21 @@ public class LibrarySystem extends JFrame implements LibWindow {
 		}
     	
     }
+    
+    class LogoutListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			SystemController.currentAuth = null;
+			LibrarySystem.hideAllWindows();
+			LoginWindow.INSTANCE.init();
+			Util.centerFrameOnDesktop(LoginWindow.INSTANCE);
+			LoginWindow.INSTANCE.setVisible(true);
+			
+		}
+    	
+    }
+    
     class AllBookIdsListener implements ActionListener {
 
 		@Override

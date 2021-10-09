@@ -36,12 +36,12 @@ public class DataAccessFacade implements DataAccess {
 	}
 	
 	//implement: other save operations
-		public void saveNewBook(Book book) {
+	 public void saveNewBook(Book book) {
 			HashMap<String, Book> books = readBooksMap();
 			String isbn = book.getIsbn();
 			books.put(isbn, book);
 			saveToStorage(StorageType.BOOKS, books);	
-		}
+	}
 	
 	@SuppressWarnings("unchecked")
 	public  HashMap<String,Book> readBooksMap() {

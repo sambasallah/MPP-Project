@@ -27,6 +27,7 @@ public class Checkout extends JFrame implements LibWindow {
     public static final Checkout INSTANCE = new Checkout();
 	
 	private boolean isInitialized = false;
+	private SystemController control; 
 	
 	private JPanel mainPanel;
 	private JPanel upperHalf;
@@ -55,9 +56,12 @@ public class Checkout extends JFrame implements LibWindow {
 	public void isInitialized(boolean val) {
 		isInitialized = val;
 	}
+	
 	private JTextField messageBar = new JTextField();
+	
 	public void clear() {
-		messageBar.setText("");
+		memberID.setText("");
+		bookID.setText("");
 	}
 	
 	/* This class is a singleton */
@@ -190,7 +194,7 @@ public class Checkout extends JFrame implements LibWindow {
     		butn.addActionListener(evt -> {
     			 String memberid = memberID.getText();
     			 String bookid = bookID.getText();
-    			 SystemController control = new SystemController();
+    			 control = new SystemController();
     			 try {
 					control.checkout(memberid, bookid);
 				} catch (CheckoutException e) {

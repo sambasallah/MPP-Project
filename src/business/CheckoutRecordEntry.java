@@ -34,4 +34,12 @@ public class CheckoutRecordEntry implements Serializable {
 	public String getISBN() {
 		return book.getBook().getIsbn();
 	}
+	
+	public String getCopyNum() {
+		return book.getCopyNum() + "";
+	}
+	
+	public LocalDate getDueDate() {
+		return dueDate;
+	}
 }

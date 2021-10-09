@@ -1,6 +1,7 @@
 package business;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 public class CheckoutRecord implements Serializable {
 	/**
@@ -18,4 +19,18 @@ public class CheckoutRecord implements Serializable {
 		;
 		}
 	
+
+	public String[] getCheckoutRecord(String memberID) {
+		return new String[]{recordEntry.getBookName(),recordEntry.getISBN(),recordEntry.getCopyNum(),
+			 recordEntry.getdueDate(), memberID}
+		;
+		}
+	
+	public String getBookISBN() {
+		return recordEntry.getISBN();
+	}
+	
+	public LocalDate dueDate() {
+		return recordEntry.getDueDate();
+	}
 }

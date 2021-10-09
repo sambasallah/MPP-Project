@@ -2,8 +2,10 @@ package librarysystem;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Toolkit;
 
 import javax.security.auth.login.LoginException;
 import javax.swing.Box;
@@ -24,6 +26,7 @@ import business.SystemController;
 
 public class LoginWindow extends JFrame implements LibWindow {
     public static final LoginWindow INSTANCE = new LoginWindow();
+    SystemController control ;
 	
 	private boolean isInitialized = false;
 	
@@ -106,10 +109,10 @@ public class LoginWindow extends JFrame implements LibWindow {
 
     		lowerHalf = new JPanel();
     		lowerHalf.setLayout(new FlowLayout(FlowLayout.LEFT));
-    		
-    		JButton backButton = new JButton("<= Back to Main");
-    		addBackButtonListener(backButton);
-    		lowerHalf.add(backButton);
+//    		
+//    		JButton backButton = new JButton("<= Back to Main");
+//    		addBackButtonListener(backButton);
+//    		lowerHalf.add(backButton);
     		
     	}
     	private void defineTopPanel() {
@@ -186,22 +189,44 @@ public class LoginWindow extends JFrame implements LibWindow {
     	}
     	
     	private void addLoginButtonListener(JButton butn) {
+    		username.setText("");
+			password.setText("");
     		butn.addActionListener(evt -> {
     			 String id = username.getText();
     			 String pass = password.getText();
-    			 SystemController control = new SystemController();
+    			 control = new SystemController();
     			 try {
 					control.login(id, pass);
+					
+					
 				} catch (business.LoginException e) {
 					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(this, e.getMessage());
 				}
     			 
     			 if(SystemController.currentAuth != null) {
-    				 JOptionPane.showMessageDialog(this, "Login Success");
+    				 	JOptionPane.showMessageDialog(this, "Login Success");
+    				 	username = null;
+    				 	password = null;
+    				 	LibrarySystem.hideAllWindows();
+    		            LibrarySystem.INSTANCE.setTitle("Sample Library Application");
+    		            LibrarySystem.INSTANCE.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    		            
+    		            LibrarySystem.INSTANCE.init();
+    		            Util.centerFrameOnDesktop(LibrarySystem.INSTANCE);
+    		            LibrarySystem.INSTANCE.setVisible(true);
     			 }
     		});
     	}
+    	
+//    	public static void centerFrameOnDesktop(Component f) {
+//			Toolkit toolkit = Toolkit.getDefaultToolkit();
+//			int height = toolkit.getScreenSize().height;
+//			int width = toolkit.getScreenSize().width;
+//			int frameHeight = f.getSize().height;
+//			int frameWidth = f.getSize().width;
+//			f.setLocation(((width - frameWidth) / 2), (height - frameHeight) / 3);
+//		}
 	
         
     

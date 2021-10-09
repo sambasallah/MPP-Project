@@ -2,6 +2,7 @@ package business;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,31 +12,39 @@ import dataaccess.DataAccessFacade;
 import dataaccess.User;
 import librarysystem.Checkout;
 import librarysystem.LibrarySystem;
-import librarysystem.CheckoutHistory;
+import business.BookStatusException;
+import ui.BookStatus;
+import ui.CheckoutHistory;
 import librarysystem.Util;
 
 public class SystemController implements ControllerInterface {
 	public static Auth currentAuth = null;
+	private DataAccess data;
 	
 	public void login(String id, String password) throws LoginException {
 		DataAccess da = new DataAccessFacade();
 		HashMap<String, User> map = da.readUserMap();
+		
 		if(!map.containsKey(id)) {
 			throw new LoginException("ID " + id + " not found");
 		}
+		
 		String passwordFound = map.get(id).getPassword();
 		if(!passwordFound.equals(password)) {
 			throw new LoginException("Password incorrect");
 		}
+		
 		currentAuth = map.get(id).getAuthorization();
 		
 	}
 	
 	
 	public void checkout(String memberID, String bookID) throws CheckoutException {
-		DataAccess da = new DataAccessFacade();
-		HashMap<String, LibraryMember> member = da.readMemberMap();
-		HashMap<String, Book> books = da.readBooksMap();
+		data = new DataAccessFacade();
+		HashMap<String, LibraryMember> member = data.readMemberMap();
+		HashMap<String, Book> books = data.readBooksMap();
+		
+		System.out.println(bookID);
 		
 		if(!books.containsKey(bookID)) {
 			throw new CheckoutException("Book ID " + bookID + " not found");
@@ -70,8 +79,6 @@ public class SystemController implements ControllerInterface {
 						for(CheckoutRecord r : rec) {
 							arr.add(r.getEntry());
 						}
-						Checkout.INSTANCE.setVisible(false);
-						LibrarySystem.hideAllWindows();
 						CheckoutHistory.INSTANCE.init(arr);
 						Util.centerFrameOnDesktop(CheckoutHistory.INSTANCE);
 						CheckoutHistory.INSTANCE.setVisible(true);
@@ -81,6 +88,52 @@ public class SystemController implements ControllerInterface {
 			} 
 		}
 		
+	}
+	
+	public void checkBookStatus(String bookID) throws BookStatusException {
+		data = new DataAccessFacade();
+		HashMap<String, LibraryMember> members = data.readMemberMap();
+		List<String[]> arr = new ArrayList<>();
+		for(LibraryMember m : members.values()) {
+			for(CheckoutRecord r : m.getRecords()) {
+				if(r.getBookISBN().equals(bookID) && LocalDate.now().isBefore(r.dueDate())) {
+					arr.add(r.getCheckoutRecord(m.getMemberId()));
+				}
+			}
+		}
+		
+		if(arr.size() == 0) {
+			throw new BookStatusException("No Record Found");
+		}
+		
+		System.out.println(Arrays.deepToString(arr.get(0)));
+		
+		BookStatus.INSTANCE.init(arr);
+		Util.centerFrameOnDesktop(BookStatus.INSTANCE);
+		BookStatus.INSTANCE.setVisible(true);
+	}
+	
+	public void printCheckoutRecord(String memberID) {
+		data = new DataAccessFacade();
+		HashMap<String, LibraryMember> member = data.readMemberMap();
+		
+		LibraryMember currentMember = member.get(memberID);
+		List<CheckoutRecord> rec = currentMember.getRecords();
+		
+		StringBuilder sb = new StringBuilder();
+		
+		System.out.println("");
+		System.out.println("");
+		System.out.println("Book Name\t\tBook ISBN\t\tCheckout Date\t\tDue Date");
+		for(CheckoutRecord r : rec) {
+//			arr.add(r.getEntry());
+			for(String s : r.getEntry()) {
+				sb.append(s + "\t\t");
+			}
+			sb.append("\n");
+		}
+		
+		System.out.println(sb);
 	}
 	
 	@Override
@@ -93,10 +146,46 @@ public class SystemController implements ControllerInterface {
 	
 	@Override
 	public List<String> allBookIds() {
-		DataAccess da = new DataAccessFacade();
+		 data = new DataAccessFacade();
 		List<String> retval = new ArrayList<>();
-		retval.addAll(da.readBooksMap().keySet());
+		retval.addAll(data.readBooksMap().keySet());
 		return retval;
+	}
+	
+	@Override
+	public void addBook(Book book) {
+		data = new DataAccessFacade();
+		data.saveNewBook(book);
+		
+	}
+
+	@Override
+	public void addBookCopy(String isbn) {
+		data = new DataAccessFacade();
+		HashMap<String, Book> books = data.readBooksMap();
+		for(Book book : books.values()) {
+			  if(book.getIsbn().equals(isbn))
+			  {
+				 book.addCopy();
+				 data.saveNewBook(book);
+			  }
+		}
+		
+	}
+
+	@Override
+	public Book getBook(String isbn) {
+		Book b = null;
+		DataAccess da = new DataAccessFacade();
+		HashMap<String, Book> books = da.readBooksMap();
+		for(Book book : books.values()) {
+			  if(book.getIsbn().equals(isbn))
+			  {
+				  b= book;
+				  break;
+			  }
+		}
+		return b;
 	}
 	
 	

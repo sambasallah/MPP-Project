@@ -161,7 +161,7 @@ public class CheckoutHistory extends JFrame implements LibWindow {
 	@Override
 	public boolean isInitialized() {
 		// TODO Auto-generated method stub
-		return false;
+		return isInitialized;
 	}
 
 	@Override
