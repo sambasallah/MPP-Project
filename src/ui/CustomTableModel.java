@@ -44,6 +44,7 @@ class CustomTableModel extends DefaultTableModel {
     	if(vals == null) {
     		return;
     	}
+    	
     	Iterator<String[]> it = vals.iterator();
     	while(it.hasNext()){
     		addRow(it.next());
@@ -59,6 +60,7 @@ class CustomTableModel extends DefaultTableModel {
      * @param row
      */
     public void addRow(Object row){
+    	
     	if(row instanceof Object[]){
     		addRow((Object[])row);
     	}
@@ -69,6 +71,7 @@ class CustomTableModel extends DefaultTableModel {
     	if(tableValues == null){
     		tableValues = new ArrayList<Object[]>();
     	}
+    	setRowCount(0);
     	tableValues.add(row);
     }
         

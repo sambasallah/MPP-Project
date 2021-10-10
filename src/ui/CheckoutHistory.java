@@ -17,14 +17,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 
 import business.ControllerInterface;
 import business.SystemController;
 
 public class CheckoutHistory extends JFrame implements MessageableWindow {
-	public static final CheckoutHistory INSTANCE = new CheckoutHistory();
 	private boolean isInitialized = false;
 	private JPanel topPanel; //panel containing table
 	private JPanel middlePanel;
@@ -47,11 +48,10 @@ public class CheckoutHistory extends JFrame implements MessageableWindow {
     private final float [] COL_WIDTH_PROPORTIONS =
     	{0.25f, 0.25f, 0.25f, 0.25f};
     
-    private CheckoutHistory() {}
+    public CheckoutHistory() {}
     
 	public void init(List<String[]> arr) {
 		tableData = arr;
-		System.out.println(tableData.toString());
 		initializeWindow();
 		JPanel mainPanel = new JPanel();
 		defineTopPanel();
@@ -61,8 +61,9 @@ public class CheckoutHistory extends JFrame implements MessageableWindow {
 		mainPanel.add(middlePanel, BorderLayout.CENTER);
 		getContentPane().add(mainPanel);
 		setValues(model);
+		pack();
+		setVisible(true);
 		isInitialized = true;
-	
 	}
 	
 	private void defineTopPanel() {
@@ -74,7 +75,11 @@ public class CheckoutHistory extends JFrame implements MessageableWindow {
 	
 	private void createTableAndTablePane() {
 		updateModel();
-		table = new JTable(model);
+		table = new JTable();
+		((DefaultTableModel)table.getModel()).setNumRows(0);
+		
+		table.setModel(model);
+		table.setDefaultEditor(Object.class, null);
 		createCustomColumns(table, TABLE_WIDTH,
 	            COL_WIDTH_PROPORTIONS, DEFAULT_COLUMN_HEADERS);
 		scrollPane = new JScrollPane();
@@ -96,7 +101,7 @@ public class CheckoutHistory extends JFrame implements MessageableWindow {
 	}
 	
 	private void setValues(CustomTableModel model) {
-		
+
 		List<String[]> data = new ArrayList<>();
 		
 		for(String[] arr : tableData) {
@@ -106,6 +111,7 @@ public class CheckoutHistory extends JFrame implements MessageableWindow {
 	
 	}
 	public void updateModel(List<String[]> list){
+		
 		if(model == null) {
 			model = new CustomTableModel();
 		}

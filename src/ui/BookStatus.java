@@ -24,7 +24,6 @@ import business.ControllerInterface;
 import business.SystemController;
 
 public class BookStatus extends JFrame implements MessageableWindow {
-	public static final BookStatus INSTANCE = new BookStatus();
 	private boolean isInitialized = false;
 	private JPanel topPanel; //panel containing table
 	private JPanel middlePanel;
@@ -47,7 +46,7 @@ public class BookStatus extends JFrame implements MessageableWindow {
     private final float [] COL_WIDTH_PROPORTIONS =
     	{0.20f, 0.20f, 0.20f, 0.20f,0.20f};
     
-    private BookStatus() {}
+    public BookStatus() {}
     
 	public void init(List<String[]> arr) {
 		tableData = arr;
@@ -61,6 +60,7 @@ public class BookStatus extends JFrame implements MessageableWindow {
 		mainPanel.add(middlePanel, BorderLayout.CENTER);
 		getContentPane().add(mainPanel);
 		setValues(model);
+		setVisible(true);
 		isInitialized = true;
 	
 	}
@@ -74,7 +74,11 @@ public class BookStatus extends JFrame implements MessageableWindow {
 	
 	private void createTableAndTablePane() {
 		updateModel();
-		table = new JTable(model);
+		table = new JTable();
+		((DefaultTableModel)table.getModel()).setNumRows(0);
+		
+		table.setModel(model);
+		table.setDefaultEditor(Object.class, null);
 		createCustomColumns(table, TABLE_WIDTH,
 	            COL_WIDTH_PROPORTIONS, DEFAULT_COLUMN_HEADERS);
 		scrollPane = new JScrollPane();

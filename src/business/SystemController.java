@@ -79,9 +79,10 @@ public class SystemController implements ControllerInterface {
 						for(CheckoutRecord r : rec) {
 							arr.add(r.getEntry());
 						}
-						CheckoutHistory.INSTANCE.init(arr);
-						Util.centerFrameOnDesktop(CheckoutHistory.INSTANCE);
-						CheckoutHistory.INSTANCE.setVisible(true);
+						
+						(new CheckoutHistory()).init(arr);
+//						Util.centerFrameOnDesktop(new CheckoutHistory());
+//						(new CheckoutHistory()).setVisible(true);
 						
 				}
 				
@@ -108,9 +109,7 @@ public class SystemController implements ControllerInterface {
 		
 		System.out.println(Arrays.deepToString(arr.get(0)));
 		
-		BookStatus.INSTANCE.init(arr);
-		Util.centerFrameOnDesktop(BookStatus.INSTANCE);
-		BookStatus.INSTANCE.setVisible(true);
+		(new BookStatus()).init(arr);
 	}
 	
 	public void printCheckoutRecord(String memberID) {
