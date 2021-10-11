@@ -24,6 +24,7 @@ public class AddBookCopy  implements MessageableWindow
 	    private JPanel topPanel;
 	    private JPanel outerMiddle;
 	    private JTextField isbn;
+	    private JTextField numberofcopies;
 
 	    LibrarySystem system;
 	    public void setLibrarySystem(final LibrarySystem system) {
@@ -58,13 +59,21 @@ public class AddBookCopy  implements MessageableWindow
 	        final JPanel rightPanel = new JPanel();
 	        leftPanel.setLayout(new BoxLayout(leftPanel, 1));
 	        rightPanel.setLayout(new BoxLayout(rightPanel, 1));
-	        final JLabel authFirstNameLabel = new JLabel("ISBN");;
+	        final JLabel authFirstNameLabel = new JLabel("ISBN");
+	        final JLabel numcopiesLabel = new JLabel("Num of Copies");
 	        this.isbn = new JTextField(10);
-	       
+	        this.numberofcopies = new JTextField(10);
+	        
 	        leftPanel.add(authFirstNameLabel);
 	        leftPanel.add(Box.createRigidArea(new Dimension(0, 12)));
 	      
 	        rightPanel.add(this.isbn);
+	        rightPanel.add(Box.createRigidArea(new Dimension(0, 8)));
+	        
+	        leftPanel.add(numcopiesLabel);
+	        leftPanel.add(Box.createRigidArea(new Dimension(0, 12)));
+	      
+	        rightPanel.add(this.numberofcopies);
 	        rightPanel.add(Box.createRigidArea(new Dimension(0, 8)));
 	        
 	        middlePanel.add(leftPanel);
@@ -85,7 +94,11 @@ public class AddBookCopy  implements MessageableWindow
 	         
 	        butn.addActionListener(evt -> {
 	        	String isbnstr =isbn.getText();
-	        	
+	        	if(isbnstr.isEmpty())
+	        	{
+	        		JOptionPane.showMessageDialog(null, "Enter ISBN");
+	        		return;
+	        	}
 	      	  final ControllerInterface ci = new SystemController();
 	        	Book b = ci.getBook(isbnstr);
 	        	if(b== null)
@@ -133,17 +146,31 @@ public class AddBookCopy  implements MessageableWindow
 	         
 	        butn.addActionListener(evt -> {
 	        	String isbnstr =isbn.getText();
+	        	String numcopy =numberofcopies.getText();
+	        	if(numcopy.isEmpty() || isbnstr.isEmpty())
+	        	{
+	        		JOptionPane.showMessageDialog(null, "Enter Number of Copies and  ISBN");
+	        		return;
+	        	}
+	        	
 	        	
 	      	  final ControllerInterface ci = new SystemController();
 	        	Book b = ci.getBook(isbnstr);
-	        	if(b== null)
+	        	
+	        	 if(b== null)
 	        	{
 	        		JOptionPane.showMessageDialog(null, "There is no Book By this ISBN");
 	        	}else
 	        	{
-	        		
+	        		int  numcopy1 =Integer.parseInt(numcopy);
 	        			 System.out.println(b.toString());
-	 		        	ci.addBookCopy(isbnstr);
+	 		        
+	 		        	
+	 		        	for(int i=0; i<numcopy1;i++)
+	 	               {
+	 		        		ci.addBookCopy(isbnstr);
+	 	               }
+	 		        	
 	 		        	JOptionPane.showMessageDialog(null, "New Book Copy Added");
 	        	}
 	        	
